@@ -1,0 +1,49 @@
+{% extends "base.html" %} {% block title%}sign_up{% endblock %}
+
+{% block content %}
+
+<link href="{{url_for('static', filename='sign_up.css')}}" rel="stylesheet" />
+
+<body>
+    <div class="container-fluid full-height">
+        <div class="form-container">
+            <section class="">
+                <h3 class="mb-4 text-center">Sign Up</h3>
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="email" class="form-label ">Email Address</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter email"
+                            required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="first_name" class="form-label">First Name</label>
+                        <input type="text" class="form-control" id="firstname" name="first_name"
+                            placeholder="Enter your first name" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="last_name" class="form-label">Last Name</label>
+                        <input type="text" class="form-control" id="lastname" name="last_name"
+                            placeholder="Enter your last name" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password_1" class="form-label">Password</label>
+                        <input type="password" class="form-control" id="password1" name="password_1"
+                            placeholder="Enter your password" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password_2" class="form-label">Confirm Password</label>
+                        <input type="password" class="form-control" id="password2" name="password_2"
+                            placeholder="Confirm your password" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Submit</button>
+                </form>
+            </section>
+        </div>
+    </div>
+</body>
+{% endblock %}

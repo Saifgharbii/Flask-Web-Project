@@ -1,0 +1,37 @@
+body, html {
+    height: 100%;
+    background: linear-gradient(to bottom right, #2c3e50, #34495e, #1c2833);
+    color: #ecf0f1; /* Light text for contrast */
+}
+
+/* Darker and elegant form section */
+section {
+    background: linear-gradient(to bottom right, #3b4b61, #2f3e52, #273746);
+    border-radius: 1rem;
+    padding: 2rem;
+}
+
+/* Adjust form labels to be more chic and contrasting */
+label {
+    color: #f7f9f9;
+    font-weight: bold;
+}
+
+/* Light color for the form headers */
+h3 {
+    color: #ecf0f1;
+}
+
+/* Center the form and prevent scrolling */
+.full-height {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Form container adjustments to limit height */
+.form-container {
+    max-width: 500px;
+    width: 100%;
+}

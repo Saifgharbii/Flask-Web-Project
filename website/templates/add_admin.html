@@ -1,0 +1,28 @@
+{% extends "base.html" %} {% block title%}sign_up{% endblock %}
+
+{% block content %}
+
+<link href="{{url_for('static', filename='sign_up.css')}}" rel="stylesheet" />
+
+<body>
+    <div class="container-fluid full-height">
+        <div class="form-container">
+            <section class="">
+                <h3 class="mb-4 text-center">Add Admin</h3>
+                <form method="POST">
+                    <div class="mb-3">
+                        <label for="email" class="form-label ">Email Address</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="password" class="form-label">Write your password</label>
+                        <input type="password" class="form-control" id="password" name="password"
+                            placeholder="Enter your password to verifie" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">Submit</button>
+                </form>
+            </section>
+        </div>
+    </div>
+</body>
+{% endblock %}
