@@ -47,10 +47,10 @@
                     </button>
                 </form>
             </div>
-            <form class="d-flex">
-                <button class="btn btn-outline-dark ms-2 mt-1 " href="/add_admin" type="submit">
+            <form class="d-flex" action="{{url_for('add_admin')}}" >
+                <button class="btn btn-outline-dark ms-2 mt-1 " type="submit">
                     <i class="bi-person ">
-                        Add Account
+                        Add Admin
                     </i></button>
             </form>
             <form class="d-flex " action="{{url_for('logout')}}">
@@ -88,7 +88,7 @@
                             <!-- Product name-->
                             <h5 class="fw-bolder">gillet</h5>
                             <!-- Product price-->
-                            $40.00 - $80.00
+                            80 DT
                         </div>
                     </div>
                     <!-- Product actions-->
@@ -103,14 +103,14 @@
             <div class="col mb-5">
                 <div class="card h-100 ">
                     <!-- Product image-->
-                    <img src="{{ url_for('static', filename='assets/product_images/gillet.jpeg') }}" class="card" />
+                    <img src="{{ url_for('static', filename='assets/product_images/Shoes.jpeg') }}" class="card" />
                     <!-- Product details-->
                     <div class="card-body p-4">
                         <div class="text-center">
                             <!-- Product name-->
-                            <h5 class="fw-bolder">gillet</h5>
+                            <h5 class="fw-bolder">Shoes</h5>
                             <!-- Product price-->
-                            $40.00 - $80.00
+                            150DT
                         </div>
                     </div>
                     <!-- Product actions-->
@@ -126,14 +126,14 @@
             <div class="col mb-5">
                 <div class="card h-100 ">
                     <!-- Product image-->
-                    <img src="{{ url_for('static', filename='assets/product_images/gillet.jpeg') }}" class="card" />
+                    <img src="{{ url_for('static', filename='assets/product_images/Djean.jpeg') }}" class="card" />
                     <!-- Product details-->
                     <div class="card-body p-4">
                         <div class="text-center">
                             <!-- Product name-->
-                            <h5 class="fw-bolder">gillet</h5>
+                            <h5 class="fw-bolder">Djean</h5>
                             <!-- Product price-->
-                            $40.00 - $80.00
+                            90 DT
                         </div>
                     </div>
                     <!-- Product actions-->
@@ -149,14 +149,14 @@
             <div class="col mb-5">
                 <div class="card h-100 ">
                     <!-- Product image-->
-                    <img src="{{ url_for('static', filename='assets/product_images/gillet.jpeg') }}" class="card" />
+                    <img src="{{ url_for('static', filename='assets/product_images/T-shirt.jpeg') }}" class="card" />
                     <!-- Product details-->
                     <div class="card-body p-4">
                         <div class="text-center">
                             <!-- Product name-->
-                            <h5 class="fw-bolder">gillet</h5>
+                            <h5 class="fw-bolder">T-shirt</h5>
                             <!-- Product price-->
-                            $40.00 - $80.00
+                            30 DT
                         </div>
                     </div>
                     <!-- Product actions-->
@@ -168,30 +168,6 @@
                     </div>
                 </div>
             </div>
-
-            <div class="col mb-5">
-                <div class="card h-100 ">
-                    <!-- Product image-->
-                    <img src="{{ url_for('static', filename='assets/product_images/gillet.jpeg') }}" class="card" />
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <!-- Product name-->
-                            <h5 class="fw-bolder">gillet</h5>
-                            <!-- Product price-->
-                            $40.00 - $80.00
-                        </div>
-                    </div>
-                    <!-- Product actions-->
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent d-flex flex-column align-items-center">
-                        <div class="d-flex flex-column">
-                            <a class="btn btn-warning mb-2" href="#">Modify</a>
-                            <a class="btn btn-danger" href="#">Delete</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
 </section>

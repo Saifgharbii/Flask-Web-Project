@@ -1,6 +1,5 @@
 from flask import Flask, render_template, flash ,url_for, request , redirect , abort
 from flask_mysqldb import MySQL
-from os import path
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin ,login_user, login_required, logout_user, current_user ,LoginManager
 from functools import wraps
@@ -84,6 +83,10 @@ def admin_required(f):
 
 
 #defining Routes        
+@app.route('/')
+def home ():
+    return redirect(url_for('home_page'))
+
  
 # Home_page route
 @app.route('/home_page')
