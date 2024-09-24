@@ -38,12 +38,12 @@ def duplicate_email_check(cur,email) :
 #User_class
 
 class User(UserMixin) :
-    def __init__(self, id, email,user_type,hashedpassword):
+    def __init__(self, id, email,user_type,hashed_password):
         self.id = id
         self.email = email
         self.user_type = user_type
         self.is_admin= (user_type == "Admin")
-        self.hashedpassword=hashedpassword
+        self.hashed_password=hashed_password
 
 # Initialize the LoginManager
 
@@ -64,7 +64,7 @@ def load_user(user_id):
     user_data = cursor.fetchone()
 
     if user_data:
-        user = User(id=user_data[0], email=user_data[1], user_type=user_data[2] , hashedpassword=user_data[3])
+        user = User(id=user_data[0], email=user_data[1], user_type=user_data[2] , hashed_password=user_data[3])
         return user
     return None
 
@@ -92,7 +92,11 @@ def home ():
 @app.route('/home_page')
 @login_required
 def home_page():
-    return render_template("home_page.html")
+    cur=mysql.connection.cursor()
+    cur.execute("""select title, price,lien_image from produits""")
+    produits=cur.fetchall()
+    cur.close()
+    return render_template("home_page.html",produits=produits)
 
 # Login route
 @app.route('/login', methods=['GET', 'POST'])
@@ -113,7 +117,7 @@ def login():
             password_check = check_password_hash(values[0][2] ,password)
             if password_check :
                 flash("Logged in successfully" , category="success")
-                user = User(id=values[0][0], email=values[0][1],user_type=values[0][3] ,hashedpassword = values[0][2] )
+                user = User(id=values[0][0], email=values[0][1],user_type=values[0][3] ,hashed_password = values[0][2] )
                 login_user(user ,remember=True)
                 return redirect(url_for('home_page'))
             else :
@@ -125,7 +129,11 @@ def login():
 @login_required
 @admin_required
 def admin_dashboard():
-    return render_template("admin_dashboard.html")
+    cur=mysql.connection.cursor()
+    cur.execute("""select title, price, lien_image from produits""")
+    produits=cur.fetchall()
+    cur.close()
+    return render_template("admin_dashboard.html",produits=produits)
 
 # Logout route
 @app.route('/logout', methods=['GET', 'POST'])
@@ -185,7 +193,19 @@ def add_admin() :
         #admin password verification
         password_check = check_password_hash(current_user.hashed_password , password)
         if password_check :
-            pass 
+            cur.execute("select * from users where email=%s",(email,))
+            email_exist=cur.fetchall()
+            if email_exist :
+                cur.execute("""  
+                            update users set user_type = 'admin' where email=%s
+                            """ ,(email,))
+                cur.close()
+                flash("Added succesfully ", category='Success')
+            else :
+                flash("The email written doesn't exist !", category='Error')
+        else :
+            flash("Wrong Password !!",category='Error')
+        return redirect('admin_dashboard')
         
             
     return render_template('add_admin.html')
