@@ -3,6 +3,7 @@ from flask_mysqldb import MySQL
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin ,login_user, login_required, logout_user, current_user ,LoginManager
 from functools import wraps
+import os
 
 DB_NAME = "database.db" 
 
@@ -33,6 +34,25 @@ def duplicate_email_check(cur,email) :
     for e_mail in emails :
         if email == e_mail : return True
     return False
+
+def add_prodcut(title,category,price,image_path) :
+    conn=mysql.connection
+    cur=conn.cursor()
+    cur.execute("insert into produits (title, category, price, image_path) VALUES (%s, %s, %s, %s)" , ((title, category, price, image_path)))
+    conn.commit()
+    cur.close()
+    
+def delete_product_db(product_id) :
+    conn=mysql.connection
+    cur=conn.cursor()
+    cur.execute("select image_path from produits where ID=%s" ,(product_id,))
+    image_path=cur.fetchone()[0]
+    image_path = os.path.join(app.root_path,"static\\assets\\product_images\\",image_path[22:])
+    os.remove(image_path)
+    cur.execute("delete from produits where ID=%s" ,(product_id,))
+    conn.commit()    
+    cur.close()
+    flash("Product deleted successfully" ,category="success")
 
 
 #User_class
@@ -89,14 +109,63 @@ def home ():
 
  
 # Home_page route
+categories = ["T-shirts" ,"Jeans" ,"Jackets" ,"Shoes" , "Accessories" ]
 @app.route('/home_page')
+@app.route('/home_page/search/<search>')
+@app.route('/home_page/filter/<category>')
 @login_required
-def home_page():
+def home_page(category='ALL' , search = ''):
     cur=mysql.connection.cursor()
-    cur.execute("""select title, price,lien_image from produits""")
-    produits=cur.fetchall()
+    if search :
+        search_query=request.args.get("product_name")   
+        print(search_query)
+        query ="""select title, price,image_path from produits where title like  %s"""  
+        cur.execute(query ,("%" + search_query + "%",))
+        produits = cur.fetchall()
+    else :  
+        if category=='ALL':
+            cur.execute("""select title, price,image_path from produits""")
+            produits=cur.fetchall()
+        else:
+            cur.execute("""select title, price,image_path from produits where category = %s""" , (category,))
+            produits=cur.fetchall()
+            
+    cur.close()        
+    return render_template("home_page.html",produits=produits ,categories=categories )    
+        
+    
+#admin-dashboard
+
+
+@app.route('/admin_dashboard' ,methods=['GET'])
+@app.route('/admin_dashboard/search/<search>')
+@app.route('/admin_dashboard/filter/<category>')
+@login_required
+@admin_required
+def admin_dashboard(category='ALL' ,search=''):
+    cur=mysql.connection.cursor()   
+    if search :
+        search_query=request.args.get("product_name")   
+        print(search_query)
+        query ="""select title, price,image_path , ID from produits where title like  %s"""  
+        cur.execute(query ,("%" + search_query + "%",))
+        produits = cur.fetchall()
+    else : 
+        if category =='ALL':
+            cur.execute("""select title, price,image_path ,ID from produits""")
+            produits=cur.fetchall()
+        else:
+            cur.execute("""select title, price,image_path from produits where category = %s""" , (category,))
+            produits=cur.fetchall()
+    
     cur.close()
-    return render_template("home_page.html",produits=produits)
+    return render_template("admin_dashboard.html",produits=produits ,categories=categories )
+        
+
+#---------------------------------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------User Inscription-------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 # Login route
 @app.route('/login', methods=['GET', 'POST'])
@@ -124,16 +193,6 @@ def login():
                 flash("the password is incorrect" , category="Error")  
     return render_template('login.html')
 
-#admin-dashboard
-@app.route('/admin-dashboard' ,methods=['GET' , 'POST'])
-@login_required
-@admin_required
-def admin_dashboard():
-    cur=mysql.connection.cursor()
-    cur.execute("""select title, price, lien_image from produits""")
-    produits=cur.fetchall()
-    cur.close()
-    return render_template("admin_dashboard.html",produits=produits)
 
 # Logout route
 @app.route('/logout', methods=['GET', 'POST'])
@@ -177,7 +236,7 @@ def sign_up():
     return render_template('sign_up.html')
 
 #---------------------------------------------------------------------------------------------------------------------------------------------------
-#---------------------------------------------------------------------------To Complete-------------------------------------------------------------
+#---------------------------------------------------------------------------Admin Management-------------------------------------------------------------
 #---------------------------------------------------------------------------------------------------------------------------------------------------
 
 @app.route('/add_admin' , methods=['GET' , 'POST'])
@@ -188,7 +247,8 @@ def add_admin() :
         email = request.form.get('email')
         password = request.form.get('password')
         #cursor intialisation
-        cur = mysql.connection.cursor()
+        conn= mysql.connection
+        cur = conn.cursor()
         
         #admin password verification
         password_check = check_password_hash(current_user.hashed_password , password)
@@ -197,10 +257,11 @@ def add_admin() :
             email_exist=cur.fetchall()
             if email_exist :
                 cur.execute("""  
-                            update users set user_type = 'admin' where email=%s
+                            UPDATE `users` SET `user_type` = 'Admin' WHERE `users`.`email` = %s
                             """ ,(email,))
+                conn.commit()
                 cur.close()
-                flash("Added succesfully ", category='Success')
+                flash("Added succesfully " + email, category='Success')
             else :
                 flash("The email written doesn't exist !", category='Error')
         else :
@@ -210,13 +271,37 @@ def add_admin() :
             
     return render_template('add_admin.html')
 
+#---------------------------------------------------------------------------------------------------------------------------------------------------
+#---------------------------------------------------------------------------Products Management-------------------------------------------------------------
+#---------------------------------------------------------------------------------------------------------------------------------------------------
+
 #create product route 
 @app.route('/create_product', methods=['GET', 'POST'])
 @login_required
-
-
+@admin_required
 def create_product():
+    if request.method =='POST' :
+        title = request.form.get('title')
+        category = request.form.get('category')
+        price = request.form.get('price')
+        image = request.files.get('image')
+        image.save(f'static/assets/product_images/{image.filename}')
+        image_path= f"assets/product_images/{image.filename}"
+        add_prodcut(title,category,price,image_path)
+        flash("Added succesfully " ,category='Success')
+        return redirect("/admin_dashboard")
+    
     return render_template('create_product.html')
+
+
+#delete product process
+@app.route('/delete_product/<int:item_id>')
+@login_required
+@admin_required
+def delete_product(item_id) :
+    #cursor intialisation
+    delete_product_db(item_id)
+    return redirect('/admin_dashboard')
 
 # Main entry point
 if __name__ == '__main__':

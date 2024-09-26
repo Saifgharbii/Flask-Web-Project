@@ -7,34 +7,32 @@
         <a class="navbar-brand" href="#!"
             style="text-decoration-color: #ffffff;font-family: 'Dancing Script', cursive;">Dabchi</a>
         <div class="col-md-5 col-12 mb-2 mt-1">
-            <div class="d-flex form-inputs">
-                <input class="form-control" type="text" placeholder="Search any product...">
-                <i class="bx bx-search"></i>
-            </div>
+
+            <form class="col-12" action="{{url_for('admin_dashboard', search ='title')}}" >
+              <input class="form-control" type="text" id="product_name" name="product_name" placeholder="Search any product..." >
+              <i class="bx bx-search" ></i>
+            </form>
+
         </div>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span
                 class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
-                <li class="nav-item"><a class="nav-link " aria-current="page" href="/home">Home</a></li>
+                <li class="nav-item"><a class="nav-link " aria-current="page" href="/home_page">Home</a></li>
                 <li class="nav-item"><a class="nav-link" href="#about-section">About</a></li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button"
                         data-bs-toggle="dropdown" aria-expanded="false">Categories</a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                        <li><a class="dropdown-item" href="#!">All Products</a></li>
+                        <li><a class="dropdown-item" href="{{url_for('admin_dashboard',category='ALL')}}">All Products</a></li>
                         <li>
                             <hr class="dropdown-divider" />
                         </li>
-                        <li><a class="dropdown-item" href="#!">Popular Items</a></li>
-                        <li><a class="dropdown-item" href="#!">T-shirts</a></li>
-                        <li><a class="dropdown-item" href="#!">Jeans</a></li>
-                        <li><a class="dropdown-item" href="#!">Jackets</a></li>
-                        <li><a class="dropdown-item" href="#!">Shoes</a></li>
-                        <li><a class="dropdown-item" href="#!">Accessories</a></li>
-                        <li><a class="dropdown-item" href="#!">Sportswear</a></li>
-
+                        
+                        {%for category in categories%}
+                            <li><a class="dropdown-item" href="{{url_for('admin_dashboard',category=category)}}">{{category}}</a></li>
+                        {%endfor%}
 
                     </ul>
                 </li>
@@ -78,96 +76,32 @@
     style="background: linear-gradient(to bottom right, #3b4b61, #2f3e52, #273746);border-radius: 1rem;">
     <div class="container px-4 px-lg-5 mt-5">
         <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+            
+            {% for produit in produits%}
             <div class="col mb-5">
                 <div class="card h-100 ">
                     <!-- Product image-->
-                    <img src="{{ url_for('static', filename='assets/product_images/gillet.jpeg') }}" class="card" />
+                    <img src="{{ url_for('static', filename=produit[2]) }}" class="card"  />
                     <!-- Product details-->
                     <div class="card-body p-4">
                         <div class="text-center">
                             <!-- Product name-->
-                            <h5 class="fw-bolder">gillet</h5>
+                            <h5 class="fw-bolder">{{produit[0]}}</h5>
                             <!-- Product price-->
-                            80 DT
+                            {{produit[1]}} DT
                         </div>
                     </div>
                     <!-- Product actions-->
                     <div class="card-footer p-4 pt-0 border-top-0 bg-transparent d-flex flex-column align-items-center">
                         <div class="d-flex flex-column">
                             <a class="btn btn-warning mb-2" href="#">Modify</a>
-                            <a class="btn btn-danger" href="#">Delete</a>
+                            <a class="btn btn-danger" href="{{'/delete_product/{}'.format(produit[3])}}">Delete</a>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col mb-5">
-                <div class="card h-100 ">
-                    <!-- Product image-->
-                    <img src="{{ url_for('static', filename='assets/product_images/Shoes.jpeg') }}" class="card" />
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <!-- Product name-->
-                            <h5 class="fw-bolder">Shoes</h5>
-                            <!-- Product price-->
-                            150DT
-                        </div>
-                    </div>
-                    <!-- Product actions-->
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent d-flex flex-column align-items-center">
-                        <div class="d-flex flex-column">
-                            <a class="btn btn-warning mb-2" href="#">Modify</a>
-                            <a class="btn btn-danger" href="#">Delete</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col mb-5">
-                <div class="card h-100 ">
-                    <!-- Product image-->
-                    <img src="{{ url_for('static', filename='assets/product_images/Djean.jpeg') }}" class="card" />
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <!-- Product name-->
-                            <h5 class="fw-bolder">Djean</h5>
-                            <!-- Product price-->
-                            90 DT
-                        </div>
-                    </div>
-                    <!-- Product actions-->
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent d-flex flex-column align-items-center">
-                        <div class="d-flex flex-column">
-                            <a class="btn btn-warning mb-2" href="#">Modify</a>
-                            <a class="btn btn-danger" href="#">Delete</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col mb-5">
-                <div class="card h-100 ">
-                    <!-- Product image-->
-                    <img src="{{ url_for('static', filename='assets/product_images/T-shirt.jpeg') }}" class="card" />
-                    <!-- Product details-->
-                    <div class="card-body p-4">
-                        <div class="text-center">
-                            <!-- Product name-->
-                            <h5 class="fw-bolder">T-shirt</h5>
-                            <!-- Product price-->
-                            30 DT
-                        </div>
-                    </div>
-                    <!-- Product actions-->
-                    <div class="card-footer p-4 pt-0 border-top-0 bg-transparent d-flex flex-column align-items-center">
-                        <div class="d-flex flex-column">
-                            <a class="btn btn-warning mb-2" href="#">Modify</a>
-                            <a class="btn btn-danger" href="#">Delete</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {%endfor%}
+            
         </div>
     </div>
 </section>
